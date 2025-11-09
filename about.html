@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
     <script>
         tailwind.config = {
             theme: {
@@ -127,7 +128,8 @@
                 <div class="w-10 h-10 rounded-full bg-gradient-to-r from-neon-blue to-neon-purple flex items-center justify-center glow">
                     <i class="fas fa-rocket text-white"></i>
                 </div>
-                <a href="index.html" class="font-orbitron text-xl font-bold text-glow">SpaceVoyager</a>
+                <a href="index.html" class="font-orbitron text-xl font-bold text-glow" id="">SpaceVoyager</a>
+                <a href="index.html" class="font-orbitron text-xl font-bold text-glow" id="name_"></a>
             </div>
             
             <div class="hidden md:flex space-x-8">
@@ -135,7 +137,7 @@
                 <a href="destinations.html" class="nav-link hover:text-neon-blue transition-colors">Destinations</a>
                 <a href="booking.html" class="nav-link hover:text-neon-blue transition-colors">Booking</a>
                 <a href="about.html" class="nav-link hover:text-neon-blue transition-colors text-neon-blue">About</a>
-                <a href="login.html" class="nav-link hover:text-neon-blue transition-colors">Login</a>
+                <a href="login.html" class="nav-link hover:text-neon-blue transition-colors" id="login_tag">Login</a>
             </div>
             
             <div class="md:hidden">
@@ -350,6 +352,26 @@
     </footer>
 
     <script>
+         let name_in_page = document.getElementById("name_")
+         let login_hid = document.getElementById("login_tag")
+           let login_info_id =-1;
+         login_hid.addEventListener("click",function(){
+            
+                if(!is_login){
+                    let users = JSON.parse(localStorage.getItem("users")) || [];
+
+                    for (let user of users) {
+                        if (user.id===login_info_id) {
+                        
+                        user.is_login =false;
+                        localStorage.setItem("users", JSON.stringify(users));
+                         window.open("index.html", "_blank");
+                        }
+                    }
+                }
+
+
+         })
         // Create stars background
         function createStars() {
             const container = document.getElementById('stars-container');
@@ -375,6 +397,24 @@
         document.addEventListener('DOMContentLoaded', function() {
             createStars();
         });
+        function fetch_data() {
+
+ let users = JSON.parse(localStorage.getItem("users")) || [];
+
+    for (let user of users) {
+        if (user.logged_in===true) {
+            let nome_ = user.nome
+           name_in_page.innerText=nome_
+           login_hid.style.display="none"
+           login_hid.innerText="log out"
+           login_info_id=user.id;
+            
+        }
+    }
+   
+}
+   fetch_data() 
+
     </script>
 </body>
 </html>

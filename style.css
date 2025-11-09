@@ -30,7 +30,7 @@
   
   /* Border Radius */
   --border-radius: 15px;
-  --border-radius-sm: 8px;
+  --border-radius-sm: 20px;
   
   /* Transitions */
   --transition-fast: 0.2s ease;
@@ -382,9 +382,9 @@ h4 { font-size: clamp(1.25rem, 2.5vw, 1.5rem); }
   background: rgba(22, 33, 62, 0.5);
   border: 1px solid rgba(14, 165, 233, 0.3);
   border-radius: var(--border-radius-sm);
-  color: white;
+  color: rgb(255, 0, 0);
   font-family: var(--font-exo);
-  font-size: 1rem;
+  font-size: 4rem;
   transition: all var(--transition-normal);
 }
 
@@ -631,6 +631,7 @@ h4 { font-size: clamp(1.25rem, 2.5vw, 1.5rem); }
 
 .login-card {
   text-align: center;
+  background-color: red;
 }
 
 .login-icon {

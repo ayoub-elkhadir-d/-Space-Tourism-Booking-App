@@ -1,0 +1,30 @@
+[ {
+       "id":0,
+       "nome":"david opun",
+        "logged_in": "false",
+        "email_u": "wemul@mailinator.com",
+        "password_u": "ooiuyhgh552"
+    },
+     {
+         "id":1,
+        "nome":"karim elati",
+     "logged_in": "false",
+        "email_u": "zokekydil@mailinator.com",
+        "password_u": "125854snbs"
+    },
+    {
+         "id":2,
+        "nome":"Ayoub Elkhadir",
+      "logged_in": "false",
+        "email_u": "assiacodi@gmail.com",
+        "password_u": "S133388405@taalim.ma"
+    },
+    {
+         "id":3,
+        "nome":"hamid omar",
+       "logged_in": "false",
+        "email_u": "vyzihuc@mailinator.com",
+        "password_u": "55211azyhz"
+    }]
+
+

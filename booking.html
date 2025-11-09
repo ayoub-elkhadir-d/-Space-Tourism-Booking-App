@@ -59,7 +59,7 @@
       }
 
       .glow {
-        box-shadow: 0 0 15px rgba(14, 165, 233, 0.5);
+        box-shadow: 0 0 15px rgba(106, 208, 255, 0.5);
       }
 
       .text-glow {
@@ -73,7 +73,7 @@
         border-radius: 15px;
       }
 
-      .form-input {
+      .form-input,.select_dis {
         background: rgba(22, 33, 62, 0.5);
         border: 1px solid rgba(14, 165, 233, 0.3);
         border-radius: 8px;
@@ -115,6 +115,11 @@
         transform: translateY(-2px);
         box-shadow: 0 5px 15px rgba(14, 165, 233, 0.4);
       }
+      .selected {
+  border-color: #0ea5e9;
+  box-shadow: 0 0 20px rgba(14, 165, 233, 0.6);
+}
+
     </style>
   </head>
   <body class="text-white font-exo min-h-screen">
@@ -176,45 +181,111 @@
     </nav>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 py-8 relative z-10 flex flex-col justify-center">
-       
-      <div class="max-w-md mx-auto py-12">
-        <!-- Login Card -->
-        <div class="login-card p-8 bg-space-dark ">
-          <div class="text-center mb-8">
-            <div
-              class="w-20 h-20 rounded-full bg-gradient-to-r from-neon-purple to-neon-purple flex items-center justify-center mx-auto mb-4 glow"
-            >
-              <i class="fas fa-user-astronaut text-white text-2xl"></i>
-            </div>
-            <h1 class="font-orbitron text-3xl mb-2 text-glow">
-              SpaceVoyager Login
+    <main class="container mx-auto px-4 py-8 relative z-10 flex flex-col justify-center gap-4">
+       <h1 class="font-orbitron text-[3rem] text-center w-full mb-2 text-glow p-4 ">
+           book your spce journey
             </h1>
-            <p class="text-gray-300">Access your account and journey details</p>
+      <div>
+        <!-- Login Card -->
+          
+        <div class="login-card p-8 bg-space-dark ">
+          <div class="text-left mb-8">
+            
+            
+            <h1 class="font-orbitron text-3xl mb-2 text-glow ">
+             journey details
+            </h1>
+          
           </div>
 
           <form class="space-y-6">
+            <!--+++++++++++++++++++++++++++++++++++++++++++-->
             <div>
-              <label class="block text-gray-300 mb-2 ">Email Address</label>
-              <input
-                type="email"
-                class="form-input w-full px-4 py-3"
-                placeholder="Enter your email"
-                id="input_email"
-              />
-            </div>
+          <select id="options_dist" title="Choose your destination from the list"
+                class="select_dis w-full h-12 px-4 py-2">
+                <option value="" disabled selected>Select your destination</option>
+                </select>
 
+            </div>
+               <!--+++++++++++++++++++++++++++++++++++++++++++-->
             <div>
-              <label class="block text-gray-300 mb-2">Password</label>
+              <label class="block text-gray-300 mb-2"> departure Date</label>
               <input
-              
-                type="password"
+                type="date"
                 class="form-input w-full px-4 py-3"
-                placeholder="Enter your password"
+                placeholder="mm/dd/yy"
                 id="input_password"
               />
             </div>
+                <!--+++++++++++++++++++++++++++++++++++++++++++-->
+              <div>
+                <label class="block text-gray-300 mb-2"> number of passengers</label>
+                <div class="flex gap-4">
+                <input name="number_pp" type="radio"> solo Travelers
+                 <input name="number_pp" type="radio">couple (2)
+                 <input name="number_pp" type="radio"> group(3-6)
+                </div>
+                
+            </div>
 
+              <!--+++++++++++++++++++++++++++++++++++++++++++-->
+               
+               <div>
+                <label class="block text-gray-300 mb-2"> accommodation type</label>
+              <div class="flex flex-col md:flex-row gap-6 mt-6">
+                    <div class="flex flex-col md:flex-row gap-6 mt-6" id="accommodation_container">
+                         
+                           
+                     </div>
+              </div>
+
+              <!--+++++++++++++++++++++++++++++++++++++++++++-->
+                <div class="flex mt-1 w-full flex-wrap border-t border-neon-blue/20">
+                  
+                     <h1 class="font-orbitron text-3xl mb-2 text-glow ">
+            Personal information
+            </h1>
+                    <div class="w-full p-2">
+              <label class="block text-gray-300 mb-2">first name</label>
+              <input
+                type="text"
+                class="form-input w-full px-4 py-3"
+                placeholder="Enter your first name"
+                id="first_name"
+              />
+              </div>
+              <div class="w-full p-2">
+               <label class="block text-gray-300 mb-2">last name</label>
+              <input
+              
+                type="text"
+                class="form-input w-full px-4 py-3"
+                placeholder="Enter your last name"
+                id="last_name"
+              />
+              </div>
+                <div class="w-full p-2">
+               <label class="block text-gray-300 mb-2">Email address</label>
+              <input
+              
+                type="email"
+                class="form-input w-full px-4 py-3"
+                placeholder="Enter your email"
+                id="email_adress"
+              />
+              </div>
+                <div class="w-full p-2">
+               <label class="block text-gray-300 mb-2">phone number</label>
+              <input
+              
+                type="number"
+                class="form-input w-full px-4 py-3"
+                placeholder="Enter your phone number"
+                id="phone_number"
+              />
+              </div>
+            </div>
+            <!--+++++++++++++++++++++++++++++++++++++++++++-->
             <div class="flex items-center justify-between">
               <div class="flex items-center">
                 <input type="checkbox" id="remember" class="mr-2" />
@@ -337,16 +408,76 @@
     </footer>
 
     <script>
-      function add_data_to_local() {
-        fetch("./users.json")
+
+        let option_distination = document.getElementById("options_dist")
+        let mydata = JSON.parse(localStorage.getItem("data")) || {};
+
+        let destinations = mydata.destinations || [];
+        let spacecraft = mydata.spacecraft || [];
+        let accommodations = mydata.accommodations || [];
+        let accommodation_container_ = document.getElementById("accommodation_container")
+           document.querySelectorAll('.accommodation-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    document.querySelectorAll('.accommodation-card').forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                });
+                });
+
+
+        function add_data_to_local() {
+        fetch("./data.json")
           .then((response) => response.json())
           .then((data) => {
-            localStorage.setItem("users", JSON.stringify(data));
+            localStorage.setItem("data", JSON.stringify(data));
           })
           .catch((error) => console.error("Error:", error));
       }
       add_data_to_local();
 
+function get_data_() {
+   
+
+    for (let datas of destinations) {
+        option_distination.innerHTML += `<option value="${datas.id}">${datas.name}</option>`;
+    }
+      for (let datas of spacecraft) {
+
+    }
+      for (let data of accommodations) {
+       accommodation_container_.innerHTML+=`<div class="accommodation-card border border-neon-blue/50 rounded-xl p-4 flex-1 
+                                               hover:shadow-[0_0_15px_#0ea5e9] transition-all">
+                                            <h3 class="font-orbitron text-xl text-neon-blue mb-2">${data.name}</h3>
+                                            <p class="text-gray-300 text-sm">
+                                            ${data.shortDescription}
+                                            </p>
+                                        </div>`
+       }
+}
+get_data_();
+
+function select_destination(){
+    option_distination.addEventListener("change",function(){
+        accommodation_container_.innerHTML=""
+        let select_value =option_distination.value
+      
+         for (let data of accommodations) {
+            let is_include = data.availableOn.includes(select_value);
+            if(is_include){
+         accommodation_container_.innerHTML+=`
+         <div class="accommodation-card border border-neon-blue/50 rounded-xl p-4 flex-1 
+            hover:shadow-[0_0_15px_#0ea5e9] transition-all">
+            <h3 class="font-orbitron text-xl text-neon-blue mb-2">${data.name}</h3>
+            <p class="text-gray-300 text-sm">
+            ${data.shortDescription}
+            </p>
+        </div>`
+        }
+       }
+
+    })
+
+}
+select_destination()
       // Create stars background
       function createStars() {
         const container = document.getElementById("stars-container");
@@ -367,38 +498,12 @@
 
           container.appendChild(star);
         }
-      }
-
-      function check_in_stokage(email_, password_) {
-        let users = JSON.parse(localStorage.getItem("users")) || [];
-
-        for (let user of users) {
-          if (user.email_u === email_ && user.password_u === password_) {
-            user.logged_in = true;
-            localStorage.setItem("users", JSON.stringify(users)); // save changes
-            window.open("index.html", "_blank");
-            return; // stop after first match
-          }
-        }
-        alert("Email or password incorrect");
-      }
-
+     
+    }
       document.addEventListener("DOMContentLoaded", function () {
         createStars();
       });
 
-      const buttonSubmit = document.getElementById("button_submit");
-      const inputEmail = document.getElementById("input_email");
-      const inputPassword = document.getElementById("input_password");
-
-      buttonSubmit.addEventListener("click", async function (event) {
-        event.preventDefault();
-
-        const email = inputEmail.value;
-        const password = inputPassword.value;
-
-        check_in_stokage(email, password);
-      });
     </script>
   </body>
 </html>
