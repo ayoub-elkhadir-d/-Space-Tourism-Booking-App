@@ -383,7 +383,6 @@
 
                     for (let user of users) {
                         if (user.id===login_info_id) {
-                           
                         user.is_login =false;
                         localStorage.setItem("users", JSON.stringify(users));
                          window.open("index.html", "_blank");

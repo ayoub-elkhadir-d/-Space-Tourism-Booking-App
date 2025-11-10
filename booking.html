@@ -139,9 +139,8 @@
           >
             <i class="fas fa-rocket text-white"></i>
           </div>
-          <a href="index.html" class="font-orbitron text-xl font-bold text-glow"
-            >SpaceVoyager</a
-          >
+          <a href="index.html" class="font-orbitron text-xl font-bold text-glow">SpaceVoyager</a>
+           <a href="index.html" class="font-orbitron text-xl font-bold text-glow"id="name_"></a>
         </div>
 
         <div class="hidden md:flex space-x-8">
@@ -165,11 +164,7 @@
             class="nav-link hover:text-neon-blue transition-colors"
             >About</a
           >
-          <a
-            href="login.html"
-            class="nav-link hover:text-neon-blue transition-colors text-neon-blue"
-            >Login</a
-          >
+          <a href="login.html" class="nav-link hover:text-neon-blue transition-colors" id="login_tag">Login</a>
         </div>
 
         <div class="md:hidden">
@@ -200,7 +195,7 @@
 
           <form class="space-y-6">
             <!--+++++++++++++++++++++++++++++++++++++++++++-->
-            <div>
+          <div>
           <select id="options_dist" title="Choose your destination from the list"
                 class="select_dis w-full h-12 px-4 py-2">
                 <option value="" disabled selected>Select your destination</option>
@@ -221,9 +216,9 @@
               <div>
                 <label class="block text-gray-300 mb-2"> number of passengers</label>
                 <div class="flex gap-4">
-                <input name="number_pp" type="radio"> solo Travelers
-                 <input name="number_pp" type="radio">couple (2)
-                 <input name="number_pp" type="radio"> group(3-6)
+                <input class="radio_button" name="person" value="1" type="radio"> solo Travelers
+                 <input class="radio_button" name="person" value="2" type="radio">couple (2)
+                 <input class="radio_button" name="person" value="3" type="radio"> group(3-6)
                 </div>
                 
             </div>
@@ -234,56 +229,14 @@
                 <label class="block text-gray-300 mb-2"> accommodation type</label>
               <div class="flex flex-col md:flex-row gap-6 mt-6">
                     <div class="flex flex-col md:flex-row gap-6 mt-6" id="accommodation_container">
-                         
-                           
+                            
                      </div>
               </div>
 
               <!--+++++++++++++++++++++++++++++++++++++++++++-->
-                <div class="flex mt-1 w-full flex-wrap border-t border-neon-blue/20">
+            <div class=" flex mt-1 w-full flex-wrap border-t border-neon-blue/20" id="form_inputs">
                   
-                     <h1 class="font-orbitron text-3xl mb-2 text-glow ">
-            Personal information
-            </h1>
-                    <div class="w-full p-2">
-              <label class="block text-gray-300 mb-2">first name</label>
-              <input
-                type="text"
-                class="form-input w-full px-4 py-3"
-                placeholder="Enter your first name"
-                id="first_name"
-              />
-              </div>
-              <div class="w-full p-2">
-               <label class="block text-gray-300 mb-2">last name</label>
-              <input
-              
-                type="text"
-                class="form-input w-full px-4 py-3"
-                placeholder="Enter your last name"
-                id="last_name"
-              />
-              </div>
-                <div class="w-full p-2">
-               <label class="block text-gray-300 mb-2">Email address</label>
-              <input
-              
-                type="email"
-                class="form-input w-full px-4 py-3"
-                placeholder="Enter your email"
-                id="email_adress"
-              />
-              </div>
-                <div class="w-full p-2">
-               <label class="block text-gray-300 mb-2">phone number</label>
-              <input
-              
-                type="number"
-                class="form-input w-full px-4 py-3"
-                placeholder="Enter your phone number"
-                id="phone_number"
-              />
-              </div>
+                  
             </div>
             <!--+++++++++++++++++++++++++++++++++++++++++++-->
             <div class="flex items-center justify-between">
@@ -408,36 +361,126 @@
     </footer>
 
     <script>
+     /*
 
+     
+     */
+       let name_in_page = document.getElementById("name_")
+         let login_hid = document.getElementById("login_tag")
         let option_distination = document.getElementById("options_dist")
+        let number_passager=0;
         let mydata = JSON.parse(localStorage.getItem("data")) || {};
-
+        
         let destinations = mydata.destinations || [];
         let spacecraft = mydata.spacecraft || [];
         let accommodations = mydata.accommodations || [];
+
         let accommodation_container_ = document.getElementById("accommodation_container")
+
            document.querySelectorAll('.accommodation-card').forEach(card => {
                 card.addEventListener('click', () => {
                     document.querySelectorAll('.accommodation-card').forEach(c => c.classList.remove('selected'));
                     card.classList.add('selected');
                 });
-                });
+              });
 
+function islogin(){
 
-        function add_data_to_local() {
-        fetch("./data.json")
-          .then((response) => response.json())
-          .then((data) => {
-            localStorage.setItem("data", JSON.stringify(data));
-          })
-          .catch((error) => console.error("Error:", error));
-      }
-      add_data_to_local();
+    let users = JSON.parse(localStorage.getItem("users")) || [];
 
+        for (let user of users) {
+            if (user.logged_in===true) {
+                let nome_ = user.nome
+                    name_in_page.innerText=nome_
+                    login_hid.innerText="log out"
+                    login_info_id=user.id;
+                    return true;
+            
+            }
+        }
+}
+islogin()
+/*--------------------------------------------------------*/
+  function add_data_to_local() {
+      fetch("./data.json")
+        .then((response) => response.json())
+        .then((data) => {
+          localStorage.setItem("data", JSON.stringify(data));
+        })
+        .catch((error) => console.error("Error:", error));
+    }
+
+  add_data_to_local();
+/*--------------------------------------------------------*/
+
+      function get_number_passager(){
+                let persons_ = document.querySelectorAll('input[name="person"]');
+                let inputs_form = document.getElementById("form_inputs")
+
+         for (let radio of persons_) {
+            
+                radio.addEventListener("change", (event) => {
+                inputs_form.innerHTML=""
+                  const selectedValue = event.target.value;
+                  
+                  for(let a = 0;a<selectedValue;a++){
+                   
+  inputs_form.innerHTML+=`
+      <h1 class="font-orbitron text-3xl mb-2 text-glow ">
+          Person ${a+1}
+            </h1>
+                    <div class="w-full p-2">
+              <label class="block text-gray-300 mb-2">first name</label>
+              <input
+                type="text"
+                class="form-input w-full px-4 py-3"
+                placeholder="Enter your first name"
+                id="first_name"
+              />
+              </div>
+              <div class="w-full p-2">
+               <label class="block text-gray-300 mb-2">last name</label>
+              <input
+              
+                type="text"
+                class="form-input w-full px-4 py-3"
+                placeholder="Enter your last name"
+                id="last_name"
+              />
+              </div>
+                <div class="w-full p-2">
+               <label class="block text-gray-300 mb-2">Email address</label>
+              <input
+              
+                type="email"
+                class="form-input w-full px-4 py-3"
+                placeholder="Enter your email"
+                id="email_adress"
+              />
+              </div>
+                <div class="w-full p-2">
+               <label class="block text-gray-300 mb-2">phone number</label>
+              <input
+                type="number"
+                class="form-input w-full px-4 py-3"
+                placeholder="Enter your phone number"
+                id="phone_number"
+              />
+              </div>   
+                    `
+                    }
+                    
+                    
+                  
+                  
+    });
+ }
+}
+      get_number_passager()
+/*--------------------------------------------------------*/
 function get_data_() {
-   
-
     for (let datas of destinations) {
+    
         option_distination.innerHTML += `<option value="${datas.id}">${datas.name}</option>`;
     }
       for (let datas of spacecraft) {
@@ -455,8 +498,16 @@ function get_data_() {
 }
 get_data_();
 
+
+
+ 
+
+
+/*--------------------------------------------------------*/
 function select_destination(){
     option_distination.addEventListener("change",function(){
+
+
         accommodation_container_.innerHTML=""
         let select_value =option_distination.value
       
@@ -478,6 +529,7 @@ function select_destination(){
 
 }
 select_destination()
+/*--------------------------------------------------------*/
       // Create stars background
       function createStars() {
         const container = document.getElementById("stars-container");
