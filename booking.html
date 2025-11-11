@@ -18,7 +18,7 @@
         theme: {
           extend: {
             colors: {
-                "space-dark": "#0a0a18",
+              "space-dark": "#0a0a18",
               "space-dark": "#0a0a18",
               "space-blue": "#1a1a2e",
               "space-purple": "#16213e",
@@ -47,7 +47,7 @@
         border-radius: 50%;
         animation: twinkle 5s infinite;
       }
-
+      
       @keyframes twinkle {
         0%,
         100% {
@@ -86,11 +86,11 @@
         box-shadow: 0 0 10px rgba(14, 165, 233, 0.3);
         outline: none;
       }
-
+      
       .nav-link {
         position: relative;
       }
-
+      
       .nav-link::after {
         content: "";
         position: absolute;
@@ -110,7 +110,7 @@
         background: linear-gradient(to right, #0ea5e9, #8b5cf6);
         transition: all 0.3s ease;
       }
-
+      
       .btn-primary:hover {
         transform: translateY(-2px);
         box-shadow: 0 5px 15px rgba(14, 165, 233, 0.4);
@@ -147,8 +147,7 @@
           <a
             href="index.html"
             class="nav-link hover:text-neon-blue transition-colors"
-            >Home</a
-          >
+            >Home</a>
           <a
             href="destinations.html"
             class="nav-link hover:text-neon-blue transition-colors"
@@ -209,14 +208,14 @@
                 type="date"
                 class="form-input w-full px-4 py-3"
                 placeholder="mm/dd/yy"
-                id="input_password"
+                id="date_input"
               />
             </div>
                 <!--+++++++++++++++++++++++++++++++++++++++++++-->
               <div>
                 <label class="block text-gray-300 mb-2"> number of passengers</label>
                 <div class="flex gap-4">
-                <input class="radio_button" name="person" value="1" type="radio"> solo Travelers
+                <input class="radio_button" name="person" value="1" type="radio">solo Travelers
                  <input class="radio_button" name="person" value="2" type="radio">couple (2)
                  <input class="radio_button" name="person" value="3" type="radio"> group(3-6)
                 </div>
@@ -229,14 +228,13 @@
                 <label class="block text-gray-300 mb-2"> accommodation type</label>
               <div class="flex flex-col md:flex-row gap-6 mt-6">
                     <div class="flex flex-col md:flex-row gap-6 mt-6" id="accommodation_container">
-                            
+                    
                      </div>
               </div>
 
               <!--+++++++++++++++++++++++++++++++++++++++++++-->
-            <div class=" flex mt-1 w-full flex-wrap border-t border-neon-blue/20" id="form_inputs">
-                  
-                  
+            <div class=" flex flex-col mt-1 w-full flex-wrap border-t border-neon-blue/20" id="form_inputs">
+        
             </div>
             <!--+++++++++++++++++++++++++++++++++++++++++++-->
             <div class="flex items-center justify-between">
@@ -254,11 +252,7 @@
             </div>
 
             <button
-              class="btn-primary text-white w-full py-3 rounded-lg font-bold glow"
-              id="button_submit"
-            >
-              Login to Account
-            </button>
+              class="btn-primary text-white w-full py-3 rounded-lg font-bold glow" id="button_submit">Login to Account</button>
           </form>
 
           <div class="mt-6 pt-6 border-t border-neon-blue/20">
@@ -361,31 +355,26 @@
     </footer>
 
     <script>
-     /*
 
-     
-     */
        let name_in_page = document.getElementById("name_")
          let login_hid = document.getElementById("login_tag")
+         let date_in = document.getElementById("date_input")
         let option_distination = document.getElementById("options_dist")
+        let button_submit = document.getElementById("button_submit")
         let number_passager=0;
         let mydata = JSON.parse(localStorage.getItem("data")) || {};
         
         let destinations = mydata.destinations || [];
         let spacecraft = mydata.spacecraft || [];
         let accommodations = mydata.accommodations || [];
-
+         let select_number_persons
+         let select_destination_
+         let date_;
         let accommodation_container_ = document.getElementById("accommodation_container")
-
-           document.querySelectorAll('.accommodation-card').forEach(card => {
-                card.addEventListener('click', () => {
-                    document.querySelectorAll('.accommodation-card').forEach(c => c.classList.remove('selected'));
-                    card.classList.add('selected');
-                });
-              });
+        
+        
 
 function islogin(){
-
     let users = JSON.parse(localStorage.getItem("users")) || [];
 
         for (let user of users) {
@@ -400,7 +389,82 @@ function islogin(){
         }
 }
 islogin()
+
 /*--------------------------------------------------------*/
+function creat_form(index){
+ const form_ = document.createElement("form")
+ form_.classList.add("dy_form")
+ form_.innerHTML=`
+   <h1 class="font-orbitron text-3xl mb-2 text-glow ">
+          Person ${index}
+            </h1>
+            <div class="w-full p-2">
+              <label class="block text-gray-300 mb-2">first name</label>
+              <input  type="text" class="form-input w-full px-4 py-3" placeholder="Enter your first name" 
+              />
+              </div>
+              <div class="w-full p-2">
+               <label class="block text-gray-300 mb-2">last name</label>
+              <input
+              
+                type="text"
+                class="form-input w-full px-4 py-3"
+                placeholder="Enter your last name"
+              
+              />
+              </div>
+                <div class="w-full p-2">
+               <label class="block text-gray-300 mb-2">Email address</label>
+              <input
+              
+                type="email"
+                class="form-input w-full px-4 py-3"
+                placeholder="Enter your email"
+             
+              />
+              </div>
+                <div class="w-full p-2">
+               <label class="block text-gray-300 mb-2">phone number</label>
+              <input
+                type="number"
+                class="form-input w-full px-4 py-3"
+                placeholder="Enter your phone number"
+              
+              />
+              </div> 
+ `
+ return form_
+}
+function getdatafrom_forms(){
+const employees = [];
+      const get_forms = document.querySelectorAll(".dy_form") 
+      for(let this_form of get_forms){
+            let get_inputs = this_form.querySelectorAll("input")
+           
+          let person={}
+         
+            for(this_input of get_inputs){
+            person[this_input.type]=this_input.value 
+            }
+           employees.push(person)
+      }
+      const arraySecondData = {
+        "arraySecondData": {
+          "legnth_persons": select_number_persons,
+          "destintions": select_destination_,
+          "date": date_in.value
+        }
+      };
+      employees.push(arraySecondData);
+       
+      const result = {
+       "employees": employees
+      };
+
+      return result;
+   
+}
+
   function add_data_to_local() {
       fetch("./data.json")
         .then((response) => response.json())
@@ -416,65 +480,23 @@ islogin()
       function get_number_passager(){
                 let persons_ = document.querySelectorAll('input[name="person"]');
                 let inputs_form = document.getElementById("form_inputs")
-
+                
          for (let radio of persons_) {
             
                 radio.addEventListener("change", (event) => {
                 inputs_form.innerHTML=""
-                  const selectedValue = event.target.value;
+                  select_number_persons = event.target.value;
                   
-                  for(let a = 0;a<selectedValue;a++){
-                   
-  inputs_form.innerHTML+=`
-      <h1 class="font-orbitron text-3xl mb-2 text-glow ">
-          Person ${a+1}
-            </h1>
-                    <div class="w-full p-2">
-              <label class="block text-gray-300 mb-2">first name</label>
-              <input
-                type="text"
-                class="form-input w-full px-4 py-3"
-                placeholder="Enter your first name"
-                id="first_name"
-              />
-              </div>
-              <div class="w-full p-2">
-               <label class="block text-gray-300 mb-2">last name</label>
-              <input
-              
-                type="text"
-                class="form-input w-full px-4 py-3"
-                placeholder="Enter your last name"
-                id="last_name"
-              />
-              </div>
-                <div class="w-full p-2">
-               <label class="block text-gray-300 mb-2">Email address</label>
-              <input
-              
-                type="email"
-                class="form-input w-full px-4 py-3"
-                placeholder="Enter your email"
-                id="email_adress"
-              />
-              </div>
-                <div class="w-full p-2">
-               <label class="block text-gray-300 mb-2">phone number</label>
-              <input
-                type="number"
-                class="form-input w-full px-4 py-3"
-                placeholder="Enter your phone number"
-                id="phone_number"
-              />
-              </div>   
-                    `
-                    }
+                  for(let a = 0;a<select_number_persons;a++){
+                  inputs_form.appendChild(creat_form(a))
+                  }
                     
                     
                   
                   
     });
  }
+ 
 }
       get_number_passager()
 /*--------------------------------------------------------*/
@@ -487,32 +509,46 @@ function get_data_() {
 
     }
       for (let data of accommodations) {
-       accommodation_container_.innerHTML+=`<div class="accommodation-card border border-neon-blue/50 rounded-xl p-4 flex-1 
-                                               hover:shadow-[0_0_15px_#0ea5e9] transition-all">
-                                            <h3 class="font-orbitron text-xl text-neon-blue mb-2">${data.name}</h3>
-                                            <p class="text-gray-300 text-sm">
-                                            ${data.shortDescription}
-                                            </p>
-                                        </div>`
+       accommodation_container_.innerHTML+=`
+              <div class="accommodation-card border border-neon-blue/50 rounded-xl p-4 flex-1 
+                      hover:shadow-[0_0_15px_#0ea5e9] transition-all">
+                  <h3 class="font-orbitron text-xl text-neon-blue mb-2">${data.name}</h3>
+                  <p class="text-gray-300 text-sm">
+                  ${data.shortDescription}
+                  </p>
+              </div>`
        }
 }
 get_data_();
 
-
-
- 
-
-
 /*--------------------------------------------------------*/
 function select_destination(){
     option_distination.addEventListener("change",function(){
-
-
         accommodation_container_.innerHTML=""
-        let select_value =option_distination.value
-      
+        select_destination_ =option_distination.value
+
+        localStorage.setItem("data_pp", JSON.stringify(getdatafrom_forms()));
+        
+
+          const data = localStorage.getItem("data_pp");
+
+
+          const parsedData = JSON.parse(data);
+
+
+          const employees = parsedData.employees;
+
+                                                      
+          const found = employees.find(emp => emp.arraySecondData);
+
+
+          console.log(found.arraySecondData.legnth_persons);
+
+
+
+
          for (let data of accommodations) {
-            let is_include = data.availableOn.includes(select_value);
+            let is_include = data.availableOn.includes(select_destination_);
             if(is_include){
          accommodation_container_.innerHTML+=`
          <div class="accommodation-card border border-neon-blue/50 rounded-xl p-4 flex-1 
@@ -529,6 +565,14 @@ function select_destination(){
 
 }
 select_destination()
+
+
+
+button_submit.addEventListener("click",function(){
+
+})
+
+
 /*--------------------------------------------------------*/
       // Create stars background
       function createStars() {
