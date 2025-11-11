@@ -390,8 +390,8 @@
          let select_destination_
          let date_;
         let accommodation_container_ = document.getElementById("accommodation_container")
-        let currentPassengerCount = 0; // متغير لتتبع عدد النماذج الحالية
-        let maxPassengers = 6; // الحد الأقصى للمسافرين في المجموعة
+        let currentPassengerCount = 0;
+        let maxPassengers = 6; 
         
         
 
@@ -567,7 +567,7 @@ function getdatafrom_forms(){
 }
 get_number_passager()
 
-// إضافة حدث لزر إضافة المسافر
+
 button_add_passager.addEventListener("click", function() {
   let inputs_form = document.getElementById("form_inputs");
   if (currentPassengerCount < maxPassengers) {
@@ -581,7 +581,7 @@ button_add_passager.addEventListener("click", function() {
         validateInput(this, inputType);
       });
     });
-    // إذا وصلنا للحد الأقصى، إخفاء الزر
+  
     if (currentPassengerCount >= maxPassengers) {
       button_add_passager.style.display = "none";
     }
