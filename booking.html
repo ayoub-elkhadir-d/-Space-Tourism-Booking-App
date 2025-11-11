@@ -266,9 +266,10 @@
                 >Forgot password?</a
               >
             </div>
-
+             <button
+              class="btn-primary text-white w-full py-3 rounded-lg font-bold glow p-2" type="button" id="add_passager">add passager</button>
             <button
-              class="btn-primary text-white w-full py-3 rounded-lg font-bold glow" id="button_submit">Login to Account</button>
+              class="btn-primary text-white w-full py-3 rounded-lg font-bold glow p-2" type="button" id="button_submit">Login to Account</button>
           </form>
 
           <div class="mt-6 pt-6 border-t border-neon-blue/20">
@@ -374,6 +375,8 @@
 
        let name_in_page = document.getElementById("name_")
          let login_hid = document.getElementById("login_tag")
+         let button_add_passager = document.getElementById("add_passager")
+         button_add_passager.style.display="none"
          let date_in = document.getElementById("date_input")
         let option_distination = document.getElementById("options_dist")
         let button_submit = document.getElementById("button_submit")
@@ -387,6 +390,8 @@
          let select_destination_
          let date_;
         let accommodation_container_ = document.getElementById("accommodation_container")
+        let currentPassengerCount = 0; // متغير لتتبع عدد النماذج الحالية
+        let maxPassengers = 6; // الحد الأقصى للمسافرين في المجموعة
         
         
 
@@ -522,17 +527,37 @@ function getdatafrom_forms(){
         radio.addEventListener("change", (event) => {
         inputs_form.innerHTML=""
           select_number_persons = parseInt(event.target.value);
-          
-          for(let a = 0; a < select_number_persons; a++){
-            const formElement = creat_form(a);
-            inputs_form.appendChild(formElement);
-            // Add validation to each input
-            formElement.querySelectorAll('input').forEach(input => {
-              input.addEventListener('input', function() {
-                let inputType = this.type === 'tel' ? 'number' : this.type;
-                validateInput(this, inputType);
+          currentPassengerCount = 0;
+          if(select_number_persons < 3){
+         
+            for(let a = 0; a < select_number_persons; a++){
+              const formElement = creat_form(a);
+              inputs_form.appendChild(formElement);
+              currentPassengerCount++;
+              // Add validation to each input
+              formElement.querySelectorAll('input').forEach(input => {
+                input.addEventListener('input', function() {
+                  let inputType = this.type === 'tel' ? 'number' : this.type;
+                  validateInput(this, inputType);
+                });
               });
-            });
+            }
+            button_add_passager.style.display = "none"; 
+          } else {
+         
+            for(let a = 0; a < 3; a++){
+              const formElement = creat_form(a);
+              inputs_form.appendChild(formElement);
+              currentPassengerCount++;
+              // Add validation to each input
+              formElement.querySelectorAll('input').forEach(input => {
+                input.addEventListener('input', function() {
+                  let inputType = this.type === 'tel' ? 'number' : this.type;
+                  validateInput(this, inputType);
+                });
+              });
+            }
+            button_add_passager.style.display = "block";
           }
           // Save to localStorage after radio change
           
@@ -540,7 +565,30 @@ function getdatafrom_forms(){
  }
  
 }
-      get_number_passager()
+get_number_passager()
+
+// إضافة حدث لزر إضافة المسافر
+button_add_passager.addEventListener("click", function() {
+  let inputs_form = document.getElementById("form_inputs");
+  if (currentPassengerCount < maxPassengers) {
+    const newForm = creat_form(currentPassengerCount);
+    inputs_form.appendChild(newForm);
+    currentPassengerCount++;
+    // Add validation to new inputs
+    newForm.querySelectorAll('input').forEach(input => {
+      input.addEventListener('input', function() {
+        let inputType = this.type === 'tel' ? 'number' : this.type;
+        validateInput(this, inputType);
+      });
+    });
+    // إذا وصلنا للحد الأقصى، إخفاء الزر
+    if (currentPassengerCount >= maxPassengers) {
+      button_add_passager.style.display = "none";
+    }
+  } else {
+    alert("the limit 6");
+  }
+});
 
 function get_data_() {
     for (let datas of destinations) {
