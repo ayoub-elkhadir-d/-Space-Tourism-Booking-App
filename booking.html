@@ -119,6 +119,22 @@
   border-color: #0ea5e9;
   box-shadow: 0 0 20px rgba(14, 165, 233, 0.6);
 }
+.valid {
+  border-color: #10b981 !important;
+}
+.invalid {
+  border-color: #ef4444 !important;
+}
+.error {
+  color: #ef4444;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+.success {
+  color: #10b981;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
 
     </style>
   </head>
@@ -233,7 +249,7 @@
               </div>
 
               <!--+++++++++++++++++++++++++++++++++++++++++++-->
-            <div class=" flex flex-col mt-1 w-full flex-wrap border-t border-neon-blue/20" id="form_inputs">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-1 w-full border-t border-neon-blue/20 pt-4" id="form_inputs">
         
             </div>
             <!--+++++++++++++++++++++++++++++++++++++++++++-->
@@ -363,7 +379,7 @@
         let button_submit = document.getElementById("button_submit")
         let number_passager=0;
         let mydata = JSON.parse(localStorage.getItem("data")) || {};
-        
+        let selectedAccommodationId = null;
         let destinations = mydata.destinations || [];
         let spacecraft = mydata.spacecraft || [];
         let accommodations = mydata.accommodations || [];
@@ -390,79 +406,99 @@ function islogin(){
 }
 islogin()
 
-/*--------------------------------------------------------*/
+
+// Simple function to validate input using regex
+function validateInput(input, type) {
+  const value = input.value.trim();
+  let regex;
+  if (type === 'text') {
+    regex = /^[a-zA-Z\s]{2,30}$/; // English letters and spaces, 2-30 characters
+  } else if (type === 'email') {
+    regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Simple email regex
+  } else if (type === 'number') {
+    regex = /^\d{10,15}$/; // Phone number 10-15 digits
+  }
+  const isValid = regex.test(value);
+  const errorSpan = input.nextElementSibling;
+  if (isValid && value) {
+    input.classList.remove('invalid');
+    input.classList.add('valid');
+    errorSpan.textContent = 'Valid';
+    errorSpan.className = 'success';
+  } else if (value) {
+    input.classList.remove('valid');
+    input.classList.add('invalid');
+    errorSpan.textContent = 'Invalid: Enter valid value';
+    errorSpan.className = 'error';
+  } else {
+    input.classList.remove('valid', 'invalid');
+    errorSpan.textContent = '';
+  }
+  return isValid && value;
+}
+
 function creat_form(index){
- const form_ = document.createElement("form")
- form_.classList.add("dy_form")
+ const form_ = document.createElement("div")
+ form_.classList.add("dy_form", "border", "border-neon-blue/30", "p-4", "rounded-lg")
  form_.innerHTML=`
-   <h1 class="font-orbitron text-3xl mb-2 text-glow ">
-          Person ${index}
+   <h1 class="font-orbitron text-2xl mb-4 text-glow ">
+          Person ${index + 1}
             </h1>
-            <div class="w-full p-2">
-              <label class="block text-gray-300 mb-2">first name</label>
-              <input  type="text" class="form-input w-full px-4 py-3" placeholder="Enter your first name" 
-              />
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-gray-300 mb-2">first name</label>
+                <input type="text" class="form-input w-full px-4 py-3" placeholder="Enter your first name" />
+                <span class="error"></span>
               </div>
-              <div class="w-full p-2">
-               <label class="block text-gray-300 mb-2">last name</label>
-              <input
-              
-                type="text"
-                class="form-input w-full px-4 py-3"
-                placeholder="Enter your last name"
-              
-              />
+              <div>
+                <label class="block text-gray-300 mb-2">last name</label>
+                <input type="text" class="form-input w-full px-4 py-3" placeholder="Enter your last name" />
+                <span class="error"></span>
               </div>
-                <div class="w-full p-2">
-               <label class="block text-gray-300 mb-2">Email address</label>
-              <input
-              
-                type="email"
-                class="form-input w-full px-4 py-3"
-                placeholder="Enter your email"
-             
-              />
+              <div>
+                <label class="block text-gray-300 mb-2">Email address</label>
+                <input type="email" class="form-input w-full px-4 py-3" placeholder="Enter your email" />
+                <span class="error"></span>
               </div>
-                <div class="w-full p-2">
-               <label class="block text-gray-300 mb-2">phone number</label>
-              <input
-                type="number"
-                class="form-input w-full px-4 py-3"
-                placeholder="Enter your phone number"
-              
-              />
-              </div> 
+              <div>
+                <label class="block text-gray-300 mb-2">phone number</label>
+                <input type="tel" class="form-input w-full px-4 py-3" placeholder="Enter your phone number" />
+                <span class="error"></span>
+              </div>
+            </div>
  `
  return form_
 }
-function getdatafrom_forms(){
-const employees = [];
-      const get_forms = document.querySelectorAll(".dy_form") 
-      for(let this_form of get_forms){
-            let get_inputs = this_form.querySelectorAll("input")
-           
-          let person={}
-         
-            for(this_input of get_inputs){
-            person[this_input.type]=this_input.value 
-            }
-           employees.push(person)
-      }
-      const arraySecondData = {
-        "arraySecondData": {
-          "legnth_persons": select_number_persons,
-          "destintions": select_destination_,
-          "date": date_in.value
-        }
-      };
-      employees.push(arraySecondData);
-       
-      const result = {
-       "employees": employees
-      };
 
-      return result;
-   
+// New simple function to collect data in a clear object structure
+function getdatafrom_forms(){
+  const passengers = [];
+  const get_forms = document.querySelectorAll(".dy_form") 
+  for(let this_form of get_forms){
+    // Collect all text inputs in a list for correct ordering
+    let textInputs = this_form.querySelectorAll('input[type="text"]');
+    let inputs = {
+      firstName: textInputs[0] ? textInputs[0].value : '',
+      lastName: textInputs[1] ? textInputs[1].value : '',
+      email: this_form.querySelector('input[type="email"]').value,
+      phone: this_form.querySelector('input[type="tel"]').value
+    };
+    passengers.push(inputs);
+  }
+  
+  const bookingDetailsArray = [{
+    destination: select_destination_ || '',
+    date: date_in.value || '',
+    numPassengers: select_number_persons || 0,
+    accommodation: getSelectedAccommodationName() || ''
+  }];
+
+  const result = {
+    passengers: passengers,
+    bookingDetails: bookingDetailsArray
+  };
+
+  return result;
 }
 
   function add_data_to_local() {
@@ -475,7 +511,7 @@ const employees = [];
     }
 
   add_data_to_local();
-/*--------------------------------------------------------*/
+
 
       function get_number_passager(){
                 let persons_ = document.querySelectorAll('input[name="person"]');
@@ -483,27 +519,33 @@ const employees = [];
                 
          for (let radio of persons_) {
             
-                radio.addEventListener("change", (event) => {
-                inputs_form.innerHTML=""
-                  select_number_persons = event.target.value;
-                  
-                  for(let a = 0;a<select_number_persons;a++){
-                  inputs_form.appendChild(creat_form(a))
-                  }
-                    
-                    
-                  
-                  
+        radio.addEventListener("change", (event) => {
+        inputs_form.innerHTML=""
+          select_number_persons = parseInt(event.target.value);
+          
+          for(let a = 0; a < select_number_persons; a++){
+            const formElement = creat_form(a);
+            inputs_form.appendChild(formElement);
+            // Add validation to each input
+            formElement.querySelectorAll('input').forEach(input => {
+              input.addEventListener('input', function() {
+                let inputType = this.type === 'tel' ? 'number' : this.type;
+                validateInput(this, inputType);
+              });
+            });
+          }
+          // Save to localStorage after radio change
+          
     });
  }
  
 }
       get_number_passager()
-/*--------------------------------------------------------*/
+
 function get_data_() {
     for (let datas of destinations) {
     
-        option_distination.innerHTML += `<option value="${datas.id}">${datas.name}</option>`;
+        option_distination.innerHTML +=`<option value="${datas.id}">${datas.name}</option> `;
     }
       for (let datas of spacecraft) {
 
@@ -511,48 +553,51 @@ function get_data_() {
       for (let data of accommodations) {
        accommodation_container_.innerHTML+=`
               <div class="accommodation-card border border-neon-blue/50 rounded-xl p-4 flex-1 
-                      hover:shadow-[0_0_15px_#0ea5e9] transition-all">
+                      hover:shadow-[0_0_15px_#0ea5e9] transition-all cursor-pointer ${selectedAccommodationId === data.id.toString() ? 'selected' : ''}" 
+                      data-id="${data.id}">
                   <h3 class="font-orbitron text-xl text-neon-blue mb-2">${data.name}</h3>
                   <p class="text-gray-300 text-sm">
                   ${data.shortDescription}
                   </p>
-              </div>`
-       }
+              </div>`;
+    }
+    // Add click events to initial cards
+    addClickEventsToCards();
 }
 get_data_();
 
-/*--------------------------------------------------------*/
+
+
+
+// Function to add click events to cards
+function addClickEventsToCards() {
+    document.querySelectorAll(".accommodation-card").forEach(card => {
+        card.addEventListener("click", function () {
+            // Remove selection from other cards
+            document.querySelectorAll(".accommodation-card").forEach(c => c.classList.remove("selected"));
+            // Select current card
+            this.classList.add("selected");
+            selectedAccommodationId = this.dataset.id;
+            // Save to localStorage after accommodation selection
+            
+        });
+    });
+}
+
+
 function select_destination(){
     option_distination.addEventListener("change",function(){
         accommodation_container_.innerHTML=""
         select_destination_ =option_distination.value
-
-        localStorage.setItem("data_pp", JSON.stringify(getdatafrom_forms()));
         
-
-          const data = localStorage.getItem("data_pp");
-
-
-          const parsedData = JSON.parse(data);
-
-
-          const employees = parsedData.employees;
-
-                                                      
-          const found = employees.find(emp => emp.arraySecondData);
-
-
-          console.log(found.arraySecondData.legnth_persons);
-
-
-
 
          for (let data of accommodations) {
             let is_include = data.availableOn.includes(select_destination_);
             if(is_include){
          accommodation_container_.innerHTML+=`
          <div class="accommodation-card border border-neon-blue/50 rounded-xl p-4 flex-1 
-            hover:shadow-[0_0_15px_#0ea5e9] transition-all">
+            hover:shadow-[0_0_15px_#0ea5e9] transition-all cursor-pointer ${selectedAccommodationId === data.id.toString() ? 'selected' : ''}" 
+            data-id="${data.id}">
             <h3 class="font-orbitron text-xl text-neon-blue mb-2">${data.name}</h3>
             <p class="text-gray-300 text-sm">
             ${data.shortDescription}
@@ -560,6 +605,8 @@ function select_destination(){
         </div>`
         }
        }
+       // Add click events after update
+       addClickEventsToCards();
 
     })
 
@@ -567,38 +614,58 @@ function select_destination(){
 select_destination()
 
 
+// Simple function to check full form validity
+function isFormValid() {
+  // Check basic fields
+  if (!select_destination_) {
+    alert('Please fill the destination field');
+    return false;
+  }
+  if (!date_in.value) {
+    alert('Please fill the departure date field');
+    return false;
+  }
+  if (!select_number_persons) {
+    alert('Please select the number of passengers');
+    return false;
+  }
+  if (!getSelectedAccommodationName()) {
+    alert('Please select the accommodation type');
+    return false;
+  }
+
+  // Check passenger forms
+  const forms = document.querySelectorAll('.dy_form');
+  for (let form of forms) {
+    const inputs = form.querySelectorAll('input');
+    for (let input of inputs) {
+      let inputType = input.type === 'tel' ? 'number' : input.type;
+      if (!validateInput(input, inputType)) {
+        alert(`Please correct all fields in passenger forms (e.g., ${input.placeholder})`);
+        return false;
+      }
+    }
+  }
+  return true;
+}
 
 button_submit.addEventListener("click",function(){
+  if (isFormValid()) {
+    localStorage.setItem("data_form", JSON.stringify(getdatafrom_forms()));
+    alert('Data saved successfully!');
+  }
+});
 
-})
 
 
-/*--------------------------------------------------------*/
-      // Create stars background
-      function createStars() {
-        const container = document.getElementById("stars-container");
-        const starCount = 150;
+// Function to return selected accommodation name (or null if not selected)
+function getSelectedAccommodationName() {
+    if (!selectedAccommodationId) return null;
+    const selectedAcc = accommodations.find(acc => acc.id.toString() === selectedAccommodationId);
+    return selectedAcc ? selectedAcc.name : null;
+}
 
-        for (let i = 0; i < starCount; i++) {
-          const star = document.createElement("div");
-          star.classList.add("star");
 
-          const size = Math.random() * 2 + 1;
-          star.style.width = `${size}px`;
-          star.style.height = `${size}px`;
-
-          star.style.left = `${Math.random() * 100}%`;
-          star.style.top = `${Math.random() * 100}%`;
-
-          star.style.animationDelay = `${Math.random() * 5}s`;
-
-          container.appendChild(star);
-        }
-     
-    }
-      document.addEventListener("DOMContentLoaded", function () {
-        createStars();
-      });
 
     </script>
   </body>
