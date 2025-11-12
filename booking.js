@@ -13,7 +13,7 @@ let selectedAccommodationId = null;
 let destinations = mydata.destinations || [];
 let spacecraft = mydata.spacecraft || [];
 let accommodations = mydata.accommodations || [];
- 
+let duration_du_travel;
 let date_;
 let accommodation_container_ = document.getElementById("accommodation_container")
 let currentPassengerCount = 0; 
@@ -73,7 +73,15 @@ function validateInput(input, type) {
   }
   return isValid && value;
 }
-
+function get_price_de_destination(nome_de_destination){
+   let price__;
+for(destination_ of destinations){
+if(destination_.id===nome_de_destination){ 
+price__= destination_.price
+}
+}
+return price__
+}
 function creat_form(index){
  const form_ = document.createElement("div")
  form_.classList.add("dy_form", "border", "border-neon-blue/30", "p-4", "rounded-lg")
@@ -270,13 +278,32 @@ function addClickEventsToCards() {
     });
 }
 
+function get_days(destination){
+    let days_ = 0;
+
+    for(destination_ of destinations){
+       
+        if(destination_.id == destination){ 
+       
+            
+            if(destination_.travelDuration.includes("days")){
+                days_ = parseInt(destination_.travelDuration);
+            } else if(destination_.travelDuration.includes("years")){
+                days_ = parseInt(destination_.travelDuration) * 365;
+            } else {
+                days_ = parseInt(destination_.travelDuration) * 30;
+            }
+        }
+    }
+return days_
+}
 
 function select_destination(){
     option_distination.addEventListener("change",function(){
-        accommodation_container_.innerHTML=""
-        select_destination_ =option_distination.value
-       
-          get_days("moon")
+         accommodation_container_.innerHTML=""
+         select_destination_ =option_distination.value
+        duration_du_travel= get_days(select_destination_)
+       destinationPrice= get_price_de_destination(select_destination_)
        
          for (let data of accommodations) {
             let is_include = data.availableOn.includes(select_destination_);
@@ -357,24 +384,15 @@ function getSelectedAccommodationName() {
     const selectedAcc = accommodations.find(acc => acc.id.toString() === selectedAccommodationId);
     return selectedAcc ? selectedAcc.name : null;
 }
-function get_price_de_destination(nome_de_destination){
-   let price__;
-for(destination_ of destinations){
-if(destination_.id===nome_de_destination){ 
-price__= destination_.price
-}
-}
-return price__
+
+
+function total_(){
+console.log("days"+duration_du_travel)
+console.log("acc p"+accommodationPrice)
+console.log("dis p"+destinationPrice)
 }
 
-function get_days(destination){
-    let days_
-for(destination_ of destinations){
-    if(destination_.id===destination){ 
-   destination_.travelDuration
-    }
-}
-}
+
 
 
 
