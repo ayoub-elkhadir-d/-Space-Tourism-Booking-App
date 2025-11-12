@@ -175,7 +175,7 @@ function getdatafrom_forms() {
         date: date_in.value || '',
         numPassengers: select_number_persons || 0,
         accommodation: getSelectedAccommodationName() || '',
-        totalprice: total_price_,
+        totalprice: destinationPrice,
         
     }];
 
