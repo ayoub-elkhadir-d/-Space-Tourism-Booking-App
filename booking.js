@@ -2,7 +2,6 @@
 // VARIABLES AND DOM ELEMENTS - ALL AT THE TOP
 // =========================================
 
-// DOM Elements
 let name_in_page = document.getElementById("name_");
 let login_hid = document.getElementById("login_tag");
 let main_ = document.getElementById("container_");
@@ -10,63 +9,66 @@ let button_add_passager = document.getElementById("add_passager");
 let date_in = document.getElementById("date_input");
 let option_distination = document.getElementById("options_dist");
 let button_submit = document.getElementById("button_submit");
-let total_price_ = document.getElementById("totalprice");
 let accommodation_container_ = document.getElementById("accommodation_container");
-let inputs_form = document.getElementById("form_inputs"); // Added this, used in multiple places
+let inputs_form = document.getElementById("form_inputs");
 
-// Global data and state
 let mydata = JSON.parse(localStorage.getItem("data")) || {};
 let destinations = mydata.destinations || [];
 let spacecraft = mydata.spacecraft || [];
 let accommodations = mydata.accommodations || [];
+
 let selectedAccommodationId = null;
-let select_number_persons = 0; // Fixed: initialized to 0
+let select_number_persons = 0;
 let select_destination_ = null;
 let duration_du_travel = 0;
 let currentPassengerCount = 0;
 let maxPassengers = 6;
 
-// Prices - initialized to 0
 let destinationPrice = 0;
 let accommodationPrice = 0;
 
-// Other
-let number_passager = 0; // Not sure if used, kept for now
-button_add_passager.style.display = "none"; // Moved here from bottom
+let total_price_ =0;
+
+let number_passager = 0;
+button_add_passager.style.display = "none";
+
+
+
+
+
 
 // =========================================
 // HELPER FUNCTIONS
 // =========================================
 
-// Check if user is logged in
 function islogin() {
     let users = JSON.parse(localStorage.getItem("users")) || [];
-    let is_l = false;
     for (let user of users) {
         if (user.logged_in === true) {
-            is_l = true;
             name_in_page.innerText = user.nome;
             login_hid.innerText = "log out";
-            window.login_info_id = user.id; // Fixed: declared as global if needed
+            window.login_info_id = user.id;
             return true;
         }
     }
-    return is_l;
+    return false;
 }
 
-// Validate input (simple regex check)
 function validateInput(input, type) {
     const value = input.value.trim();
     let regex;
+
     if (type === 'text') {
-        regex = /^[a-zA-Z\s]{2,30}$/; // Letters and spaces, 2-30 chars
+        regex = /^[a-zA-Z\s]{2,30}$/;
     } else if (type === 'email') {
-        regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email
+        regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     } else if (type === 'number') {
-        regex = /^\d{10,15}$/; // Phone: 10-15 digits
+        regex = /^\d{10,15}$/;
     }
+
     const isValid = regex.test(value);
     const errorSpan = input.nextElementSibling;
+
     if (isValid && value) {
         input.classList.remove('invalid');
         input.classList.add('valid');
@@ -81,20 +83,19 @@ function validateInput(input, type) {
         input.classList.remove('valid', 'invalid');
         errorSpan.textContent = '';
     }
+
     return isValid && value;
 }
 
-// Get price of a destination by ID
 function get_price_de_destination(nome_de_destination) {
     for (let destination_ of destinations) {
         if (destination_.id === nome_de_destination) {
             return destination_.price;
         }
     }
-    return 0; // Fixed: return 0 if not found
+    return 0;
 }
 
-// Get travel duration in days (one way)
 function get_days(destination) {
     let days_ = 0;
     for (let destination_ of destinations) {
@@ -105,14 +106,13 @@ function get_days(destination) {
             } else if (durationStr.includes("years")) {
                 days_ = parseInt(durationStr) * 365;
             } else {
-                days_ = parseInt(durationStr) * 30; // Assume months
+                days_ = parseInt(durationStr) * 30;
             }
         }
     }
     return days_;
 }
 
-// Create a single passenger form
 function creat_form(index) {
     const form_ = document.createElement("div");
     form_.classList.add("dy_form", "border", "border-neon-blue/30", "p-4", "rounded-lg");
@@ -146,18 +146,16 @@ function creat_form(index) {
     return form_;
 }
 
-// Add validation listeners to a form's inputs (called once per form)
 function addValidationToForm(formElement) {
     formElement.querySelectorAll('input').forEach(function(input) {
         input.addEventListener('input', function() {
             let inputType = this.type === 'tel' ? 'number' : this.type;
             validateInput(this, inputType);
-            total_(); // Call total on any input change
+            total_();
         });
     });
 }
 
-// Get all form data
 function getdatafrom_forms() {
     const passengers = [];
     const get_forms = document.querySelectorAll(".dy_form");
@@ -177,8 +175,8 @@ function getdatafrom_forms() {
         date: date_in.value || '',
         numPassengers: select_number_persons || 0,
         accommodation: getSelectedAccommodationName() || '',
-        destinationPrice: destinationPrice,
-        accommodationPrice: accommodationPrice
+        totalprice: total_price_,
+        
     }];
 
     return {
@@ -187,7 +185,6 @@ function getdatafrom_forms() {
     };
 }
 
-// Get selected accommodation name
 function getSelectedAccommodationName() {
     if (!selectedAccommodationId) return null;
     const selectedAcc = accommodations.find(function(acc) {
@@ -196,7 +193,6 @@ function getSelectedAccommodationName() {
     return selectedAcc ? selectedAcc.name : null;
 }
 
-// Check if entire form is valid
 function isFormValid() {
     if (!select_destination_) {
         alert('Please fill the destination field');
@@ -230,21 +226,30 @@ function isFormValid() {
 }
 
 // =========================================
-// TOTAL PRICE FUNCTION - COMPLETED AND SIMPLE
+// TOTAL PRICE FUNCTION
 // =========================================
-function total_() {
 
+function updateTicketInfo() {
+    document.getElementById("ticket_total").innerText = total_price_ + " $";
+    document.getElementById("ticket_passengers").innerText = select_number_persons;
+    document.getElementById("ticket_spacecraft").innerText = getSelectedAccommodationName(); 
+    document.getElementById("ticket_duration").innerText = duration_du_travel + " days";
+    document.getElementById("ticket_destination").innerText = select_destination_ || "-";
+}
+
+
+function total_() {
     let totalDays = duration_du_travel * 2;
     let accomTotal = select_number_persons * accommodationPrice * totalDays;
     let grandTotal = destinationPrice + accomTotal;
-    total_price_.innerText = `${grandTotal}`;
+    total_price_=grandTotal
+    updateTicketInfo(); 
 }
 
 // =========================================
-// INITIALIZATION FUNCTIONS
+// INITIALIZATION FUNCTIONS 
 // =========================================
 
-// Load data from JSON if not in localStorage
 function add_data_to_local() {
     fetch("./data.json")
         .then(function(response) { return response.json(); })
@@ -254,117 +259,112 @@ function add_data_to_local() {
         .catch(function(error) { console.error("Error:", error); });
 }
 
-// Populate destinations and accommodations
 function get_data_() {
-    // Add destinations to dropdown
     for (let datas of destinations) {
-        option_distination.innerHTML += `<option value="${datas.id}">${datas.name}</option>`;
+        option_distination.innerHTML += `<option value="${datas.id}">${datas.name} - ${datas.price}-$ </option>`;
     }
-    // Skip spacecraft for now (empty in original)
 
-    // Add initial accommodations
     for (let data of accommodations) {
         accommodation_container_.innerHTML += `
             <div class="accommodation-card border border-neon-blue/50 rounded-xl p-4 flex-1 
-                    hover:shadow-[0_0_15px_#0ea5e9] transition-all cursor-pointer ${selectedAccommodationId === data.id.toString() ? 'selected' : ''}" 
+                    hover:shadow-[0_0_15px_#0ea5e9] transition-all cursor-pointer" 
                     data-id="${data.id}">
                 <h3 class="font-orbitron text-xl text-neon-blue mb-2">${data.name}</h3>
                 <p class="text-gray-300 text-sm">${data.shortDescription}</p>
                 <h3 class=" text-M text-neon-blue mb-2">${data.pricePerDay}$/day</h3>
             </div>`;
     }
-    // Add click events once
     addClickEventsToCards();
 }
 
-// Handle accommodation card clicks (removed repetition)
 function addClickEventsToCards() {
     document.querySelectorAll(".accommodation-card").forEach(function(card) {
         card.addEventListener("click", function() {
-            // Remove selection from others
             document.querySelectorAll(".accommodation-card").forEach(function(c) {
                 c.classList.remove("selected");
             });
-            // Select this one
             this.classList.add("selected");
             selectedAccommodationId = this.dataset.id;
-            total_(); // Update total
 
-            // Set price
             const selectedAcc = accommodations.find(function(acc) {
                 return acc.id.toString() === selectedAccommodationId;
             });
             if (selectedAcc) {
                 accommodationPrice = selectedAcc.pricePerDay;
-             
             }
+            total_();
         });
     });
 }
 
-// Handle number of passengers (simplified, no repetition)
 function get_number_passager() {
     let persons_ = document.querySelectorAll('input[name="person"]');
     for (let radio of persons_) {
         radio.addEventListener("change", function(event) {
-            inputs_form.innerHTML = ""; // Clear forms
+            inputs_form.innerHTML = "";
             select_number_persons = parseInt(event.target.value);
             currentPassengerCount = 0;
 
-            let formsToCreate = (select_number_persons < 3) ? select_number_persons : 3;
+            let formsToCreate;
+            if (select_number_persons < 3) {
+                formsToCreate = select_number_persons;
+            } else {
+                formsToCreate = 3;
+            }
+
             for (let a = 0; a < formsToCreate; a++) {
                 const formElement = creat_form(a);
                 inputs_form.appendChild(formElement);
                 currentPassengerCount++;
-                addValidationToForm(formElement); // Use shared function
+                addValidationToForm(formElement);
             }
 
-            button_add_passager.style.display = (select_number_persons < 3) ? "none" : "block";
-            total_(); // Added: update total when persons change
+            if (select_number_persons < 3) {
+                button_add_passager.style.display = "none";
+            } else {
+                button_add_passager.style.display = "block";
+            }
+
+            total_();
         });
     }
 }
 
-// Handle destination change (simplified)
 function select_destination() {
     option_distination.addEventListener("change", function() {
-        accommodation_container_.innerHTML = ""; // Clear
+        accommodation_container_.innerHTML = "";
         select_destination_ = option_distination.value;
         duration_du_travel = get_days(select_destination_);
         destinationPrice = get_price_de_destination(select_destination_);
-        total_(); // Update total
-
-        // Rebuild available accommodations
+        
+        total_();
+        
         for (let data of accommodations) {
-            let is_include = data.availableOn.includes(select_destination_);
-            if (is_include) {
+            if (data.availableOn.includes(select_destination_)) {
                 accommodation_container_.innerHTML += `
                     <div class="accommodation-card border border-neon-blue/50 rounded-xl p-4 flex-1 
-                        hover:shadow-[0_0_15px_#0ea5e9] transition-all cursor-pointer ${selectedAccommodationId === data.id.toString() ? 'selected' : ''}" 
-                            data-id="${data.id}">
+                        hover:shadow-[0_0_15px_#0ea5e9] transition-all cursor-pointer"
+                        data-id="${data.id}">
                         <h3 class="font-orbitron text-xl text-neon-blue mb-2">${data.name}</h3>
                         <p class="text-gray-300 text-sm">${data.shortDescription}</p>
                         <h3 class=" text-M text-neon-blue mb-2">${data.pricePerDay}$/day</h3>
                     </div>`;
             }
         }
-        // Re-add click events
         addClickEventsToCards();
     });
 }
 
 // =========================================
-// EVENT LISTENERS
+//             EVENT LISTENERS
 // =========================================
 
-// Add passenger button
 button_add_passager.addEventListener("click", function() {
     if (currentPassengerCount < maxPassengers) {
         const newForm = creat_form(currentPassengerCount);
         inputs_form.appendChild(newForm);
         currentPassengerCount++;
-        addValidationToForm(newForm); // Use shared function
-
+        addValidationToForm(newForm);
         if (currentPassengerCount >= maxPassengers) {
             button_add_passager.style.display = "none";
         }
@@ -373,7 +373,6 @@ button_add_passager.addEventListener("click", function() {
     }
 });
 
-// Submit button
 button_submit.addEventListener("click", function() {
     if (islogin()) {
         if (isFormValid()) {
@@ -385,9 +384,13 @@ button_submit.addEventListener("click", function() {
     }
 });
 
+// ✅ تحديث السعر عند تغيير التاريخ
+date_in.addEventListener("change", total_);
+
 // =========================================
-// INITIAL CALLS - AT THE BOTTOM
+// INITIAL CALLS
 // =========================================
+
 add_data_to_local();
 islogin();
 if (islogin()) {
