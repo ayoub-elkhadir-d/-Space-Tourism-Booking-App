@@ -31,9 +31,12 @@ let total_price_ =0;
 
 let number_passager = 0;
 button_add_passager.style.display = "none";
-let all_data_forms = JSON.parse(localStorage.getItem("data_form"))
+let all_data_forms = JSON.parse(localStorage.getItem("data_form"))|| []
 let all_data = all_data_forms;
 
+function generateUniqueId() {
+    return crypto.randomUUID();
+}
 
 
 
@@ -181,7 +184,9 @@ function  getdatafrom_forms(){
         numPassengers: currentPassengerCount || 0,
         accommodation: getSelectedAccommodationName() || '',
         totalprice: total_price_,
-        duration:duration_du_travel
+        duration:duration_du_travel,
+        status:"Virefied",
+        id:generateUniqueId()
 
     }];
 
@@ -418,7 +423,7 @@ islogin();
 if (islogin()) {
     button_submit.innerText = "Submit data";
 }
-
+//localStorage.removeItem("data_form")
 get_data_();
 get_number_passager();
 select_destination();
