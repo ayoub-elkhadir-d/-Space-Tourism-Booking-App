@@ -14,7 +14,7 @@ function get_all_data() {
             🚀 Travel Ticket
         </h2>
 
-        <span class="verified_h1 px-4 py-2 text-lg font-bold text-green-400 border  rounded-xl bg-green-900/20 shadow-[0_0_10px_#22c55e]" >
+        <span class="verified_h1 px-4 py-2 text-lg font-bold  border  rounded-xl bg-green-900/20 shadow-[0_0_10px_#22c55e]" >
           ${item.bookingDetails[0].status}
         </span>
     </div>
@@ -98,27 +98,29 @@ container_cards.addEventListener('click', function(event) {
 
         }
          if (priceElement) {
-
-        
             priceElement.textContent = "Canceled";
+   
+        }
 
-          
-            priceElement.classList.remove(
-                "text-green-400",
-                "border-green-500",
-                "bg-green-900/20",
-                "shadow-[0_0_10px_#22c55e]"
-            );
+    }if (event.target.classList.contains('button_delete')) {
+       const card = event.target.closest('.card');
+      
+       const element_id = card.querySelector('.id_class');
+       let rawText = element_id.textContent; 
+        let bookingId = rawText.replace("ID :", "").trim();
+        
+              for (let item of mydata) {
 
-           
-            priceElement.classList.add(
-                "text-red-400",
-                "border-red-500",
-                "bg-red-900/20",
-                "shadow-[0_0_10px_#f00]"
-            );
-            
-            
+            if(item.bookingDetails[0].id==bookingId){
+                let index = mydata.findIndex(function(item){ return item.bookingDetails[0].id == bookingId});
+                if(index!==-1){
+                mydata.splice(index, 1);
+                localStorage.setItem("data_form", JSON.stringify(mydata));
+                card.remove();
+                }
+
+            }
+
         }
     }
 });
