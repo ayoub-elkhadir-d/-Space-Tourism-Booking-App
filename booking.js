@@ -243,7 +243,7 @@ function isFormValid() {
 
 function updateTicketInfo() {
     document.getElementById("ticket_total").innerText = total_price_ + " $";
-    document.getElementById("ticket_passengers").innerText = select_number_persons;
+    document.getElementById("ticket_passengers").innerText = currentPassengerCount;
     document.getElementById("ticket_spacecraft").innerText = getSelectedAccommodationName(); 
     document.getElementById("ticket_duration").innerText = duration_du_travel + " days";
     document.getElementById("ticket_destination").innerText = select_destination_ || "-";
@@ -252,9 +252,9 @@ function updateTicketInfo() {
 
 function total_() {
     let totalDays = duration_du_travel * 2;
-    let accomTotal = select_number_persons * accommodationPrice * totalDays;
+    let accomTotal = currentPassengerCount * accommodationPrice * totalDays;
     let grandTotal = destinationPrice + accomTotal;
-    console.log(grandTotal)
+    console.log(currentPassengerCount)
     total_price_=grandTotal
     updateTicketInfo(); 
 }
@@ -326,10 +326,12 @@ function get_number_passager() {
             }
 
             for (let a = 0; a < formsToCreate; a++) {
+               
                 const formElement = creat_form(a);
                 inputs_form.appendChild(formElement);
-                currentPassengerCount++;
-                addValidationToForm(formElement);
+                
+                currentPassengerCount++;                 
+                addValidationToForm(formElement);               
             }
 
             if (select_number_persons < 3) {
@@ -337,7 +339,7 @@ function get_number_passager() {
             } else {
                 button_add_passager.style.display = "block";
             }
-
+       
             total_();
         });
     }
@@ -376,7 +378,11 @@ button_add_passager.addEventListener("click", function() {
     if (currentPassengerCount < maxPassengers) {
         const newForm = creat_form(currentPassengerCount);
         inputs_form.appendChild(newForm);
+        
         currentPassengerCount++;
+        
+        // console.log(currentPassengerCount)
+        total_();
         addValidationToForm(newForm);
         if (currentPassengerCount >= maxPassengers) {
             button_add_passager.style.display = "none";
@@ -390,6 +396,7 @@ button_submit.addEventListener("click", function() {
     // if (islogin()) {
         if (isFormValid()) {
             localStorage.setItem("data_form", JSON.stringify(getdatafrom_forms()));
+            
             alert('Data saved successfully!');
         }
     // } else {
