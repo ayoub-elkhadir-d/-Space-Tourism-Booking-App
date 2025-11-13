@@ -32,7 +32,7 @@ let total_price_ =0;
 let number_passager = 0;
 button_add_passager.style.display = "none";
 
-
+let all_data = [];
 
 
 
@@ -156,9 +156,14 @@ function addValidationToForm(formElement) {
     });
 }
 
-function getdatafrom_forms() {
+
+
+
+function  getdatafrom_forms(){
+
     const passengers = [];
     const get_forms = document.querySelectorAll(".dy_form");
+
     for (let this_form of get_forms) {
         let textInputs = this_form.querySelectorAll('input[type="text"]');
         let inputs = {
@@ -175,15 +180,22 @@ function getdatafrom_forms() {
         date: date_in.value || '',
         numPassengers: select_number_persons || 0,
         accommodation: getSelectedAccommodationName() || '',
-        totalprice: destinationPrice,
-        
+        totalprice: total_price_,
+        otalprice: total_price_
     }];
 
-    return {
+    
+    let data_n = {
         passengers: passengers,
         bookingDetails: bookingDetailsArray
     };
+
+    all_data.push(data_n);
+
+    return all_data;
 }
+    
+
 
 function getSelectedAccommodationName() {
     if (!selectedAccommodationId) return null;
@@ -242,6 +254,7 @@ function total_() {
     let totalDays = duration_du_travel * 2;
     let accomTotal = select_number_persons * accommodationPrice * totalDays;
     let grandTotal = destinationPrice + accomTotal;
+    console.log(grandTotal)
     total_price_=grandTotal
     updateTicketInfo(); 
 }
@@ -374,17 +387,16 @@ button_add_passager.addEventListener("click", function() {
 });
 
 button_submit.addEventListener("click", function() {
-    if (islogin()) {
+    // if (islogin()) {
         if (isFormValid()) {
             localStorage.setItem("data_form", JSON.stringify(getdatafrom_forms()));
             alert('Data saved successfully!');
         }
-    } else {
-        window.open("login.html", "_blank");
-    }
+    // } else {
+    //     window.open("login.html", "_blank");
+    // }
 });
 
-// ✅ تحديث السعر عند تغيير التاريخ
 date_in.addEventListener("change", total_);
 
 // =========================================
@@ -396,6 +408,7 @@ islogin();
 if (islogin()) {
     button_submit.innerText = "Submit data";
 }
+
 get_data_();
 get_number_passager();
 select_destination();
