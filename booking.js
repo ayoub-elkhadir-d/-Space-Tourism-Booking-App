@@ -31,8 +31,8 @@ let total_price_ =0;
 
 let number_passager = 0;
 button_add_passager.style.display = "none";
-
-let all_data = [];
+let all_data_forms = JSON.parse(localStorage.getItem("data_form"))
+let all_data = all_data_forms;
 
 
 
