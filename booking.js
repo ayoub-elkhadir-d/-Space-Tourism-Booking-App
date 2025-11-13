@@ -178,10 +178,11 @@ function  getdatafrom_forms(){
     const bookingDetailsArray = [{
         destination: select_destination_ || '',
         date: date_in.value || '',
-        numPassengers: select_number_persons || 0,
+        numPassengers: currentPassengerCount || 0,
         accommodation: getSelectedAccommodationName() || '',
         totalprice: total_price_,
-        otalprice: total_price_
+        duration:duration_du_travel
+
     }];
 
     
@@ -253,8 +254,10 @@ function updateTicketInfo() {
 function total_() {
     let totalDays = duration_du_travel * 2;
     let accomTotal = currentPassengerCount * accommodationPrice * totalDays;
+    
     let grandTotal = destinationPrice + accomTotal;
-    console.log(currentPassengerCount)
+    // console.log("total:"+destinationPrice)
+   
     total_price_=grandTotal
     updateTicketInfo(); 
 }

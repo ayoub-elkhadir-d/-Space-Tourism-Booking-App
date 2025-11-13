@@ -36,7 +36,7 @@ function get_all_data(){
         <!-- Duration -->
         <div class=" p-4  text-center border border-neon-blue/30">
             <h4 class="font-orbitron text-xl text-neon-blue mb-2">Duration</h4>
-            <p id="ticket_duration" class="text-gray-200 text-lg">${item.bookingDetails[0].totalprice}-days</p>
+            <p id="ticket_duration" class="text-gray-200 text-lg">${item.bookingDetails[0].duration}-days</p>
         </div>
 
         <!-- Destination -->
