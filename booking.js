@@ -56,7 +56,7 @@ function showAlert(message, type = 'info', options = {}) {
       icon = '❓';
       colorClass = 'text-neon-yellow';
       break;
-    default: // info
+    default: 
       icon = 'ℹ';
       colorClass = 'text-neon-blue';
   }
@@ -368,7 +368,7 @@ function getdatafrom_forms() {
 
 function isFormValid() {
     if (!select_destination_) { showAlert('Please fill the destination field', 'error'); return false; }
-    if (!date_in.value) { showAlert('Please fill the departure date field', 'error'); return false; }
+   if (!date_in.value) { showAlert('Please fill the departure date field', 'error'); return false; }
     if (!currentPassengerCount) { showAlert('Please select the number of passengers', 'error'); return false; }
     if (!getSelectedAccommodationName()) { showAlert('Please select the accommodation type', 'error'); return false; }
 
@@ -481,7 +481,21 @@ function get_number_passager() {
         });
     });
 }
+function check_date(){
 
+    let today = new Date();
+let oneMonthLater = new Date(today.getFullYear(), today.getMonth()+ 1 , today.getDate());
+
+    let inputDate = new Date(date_in.value);
+if(inputDate<oneMonthLater){
+    showAlert(`You must select a date one month more from now. ${oneMonthLater} plus`, 'error')
+
+return false
+}else{
+    return true
+}
+
+}
 // =========================================
 // DESTINATION SELECT
 // =========================================
@@ -524,11 +538,17 @@ button_add_passager.addEventListener("click", function() {
 });
 
 button_submit.addEventListener("click", function() {
+
     if (isFormValid()) {
+        check_date()
         localStorage.setItem("data_form", JSON.stringify(getdatafrom_forms()));
         showAlert(window.editingBookingId ? 'Booking updated successfully!' : 'Booking created successfully!', 'success');
         setTimeout(() => window.location.reload(), 1500);
     }
+
+    
+
+
 });
 
 date_in.addEventListener("change", total_);
