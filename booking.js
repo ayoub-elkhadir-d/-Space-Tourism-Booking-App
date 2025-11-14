@@ -128,6 +128,8 @@ function generateUniqueId() {
 }
 
 function islogin() {
+    
+
   let users = JSON.parse(localStorage.getItem("users")) || [];
   for (let user of users) {
     if (user.logged_in === true) {
@@ -137,6 +139,7 @@ function islogin() {
       return true;
     }
   }
+   window.location.replace("login.html");
   return false;
 }
 
@@ -590,13 +593,16 @@ if (button_add_passager) {
 
 if (button_submit) {
   button_submit.addEventListener("click", function() {
+    if(islogin()){
     if (isFormValid()) {
       if (!check_date()) return;
       localStorage.setItem("data_form", JSON.stringify(getdatafrom_forms()));
       showAlert(window.editingBookingId ? 'Booking updated successfully!' : 'Booking created successfully!', 'success');
       setTimeout(() => window.location.reload(), 1500);
     }
+    }
   });
+
 }
 
 if (date_in) date_in.addEventListener("change", total_);

@@ -5,7 +5,8 @@
 let mydata = JSON.parse(localStorage.getItem("data_form")) || [];
 let bookingDetails_ = mydata.bookingDetails || [];
 let passengers_ = mydata.passengers || [];
-
+let name_in_page = document.getElementById("name_");
+let login_hid = document.getElementById("login_tag");
 let container_cards = document.getElementById("container");
 
 // ===============================
@@ -160,3 +161,20 @@ container_cards.addEventListener("click", function (event) {
     }
 
 });
+function islogin() {
+    
+
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+  for (let user of users) {
+    if (user.logged_in === true) {
+      if (name_in_page) name_in_page.innerText = user.nome || user.name || '';
+      if (login_hid) login_hid.innerText = "log out";
+      window.login_info_id = user.id;
+      return true;
+    }
+  }
+  window.location.replace("login.html");
+
+  return false;
+}
+islogin()
