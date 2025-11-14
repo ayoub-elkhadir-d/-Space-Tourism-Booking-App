@@ -402,7 +402,9 @@ function getdatafrom_forms() {
 
   return all_data;
 }
-
+// =========================================
+// validate form
+// =========================================
 function isFormValid() {
   if (!select_destination_) { showAlert('Please fill the destination field', 'error'); return false; }
   if (!date_in || !date_in.value) { showAlert('Please fill the departure date field', 'error'); return false; }
@@ -451,7 +453,7 @@ function total_() {
 // =========================================
 // INITIALIZATION FUNCTIONS
 // =========================================
-function add_data_to_local() {
+function add_data_to_local() { //add data to localstorage
   fetch("./data.json")
     .then(res => res.json())
     .then(data => {
@@ -465,7 +467,7 @@ function add_data_to_local() {
     .catch(err => console.error("Error:", err));
 }
 
-function get_data_() {
+function get_data_() {   //get data from local storage
   if (!option_distination) return;
 
   option_distination.innerHTML = '';
@@ -489,7 +491,7 @@ function get_data_() {
   addClickEventsToCards();
 }
 
-function addClickEventsToCards() {
+function addClickEventsToCards() {  // add click lisner in accomendations
   document.querySelectorAll(".accommodation-card").forEach(card => {
     card.addEventListener("click", function() {
       document.querySelectorAll(".accommodation-card").forEach(c => c.classList.remove("selected"));
@@ -526,7 +528,9 @@ function get_number_passager() {
     });
   });
 }
-
+// =========================================
+// check dat
+// =========================================
 function check_date(){
   if (!date_in) return true;
   let today = new Date();
@@ -547,9 +551,9 @@ function check_date(){
 }
 
 // =========================================
-// DESTINATION SELECT
+// accommendations aficher
 // =========================================
-function select_destination() {
+function select_destination_to_afficher_accommendations() {
   if (!option_distination) return;
   option_distination.addEventListener("change", function() {
     if (accommodation_container_) accommodation_container_.innerHTML = "";
@@ -607,6 +611,7 @@ if (button_submit) {
 
 if (date_in) date_in.addEventListener("change", total_);
 
+
 // =========================================
 // INITIAL CALLS
 // =========================================
@@ -614,5 +619,5 @@ add_data_to_local();
 islogin();
 get_data_();
 get_number_passager();
-select_destination();
+select_destination_to_afficher_accommendations();
 opned_from_my_booking_to_edity();
