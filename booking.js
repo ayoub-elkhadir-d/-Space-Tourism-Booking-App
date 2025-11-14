@@ -33,6 +33,81 @@ let all_data = all_data_forms;
 window.editingBookingId = null;
 
 // =========================================
+// CUSTOM ALERT FUNCTION
+// =========================================
+function showAlert(message, type = 'info', options = {}) {
+  const modal = document.getElementById('alertModal');
+  const content = document.getElementById('alertContent');
+  const buttons = document.getElementById('alertButtons');
+
+  
+  let icon = '';
+  let colorClass = '';
+  switch (type) {
+    case 'success':
+      icon = '✅';
+      colorClass = 'text-green-400';
+      break;
+    case 'error':
+      icon = '❌';
+      colorClass = 'text-red-400';
+      break;
+    case 'confirm':
+      icon = '❓';
+      colorClass = 'text-neon-yellow';
+      break;
+    default: // info
+      icon = 'ℹ';
+      colorClass = 'text-neon-blue';
+  }
+
+  // Set content
+  content.innerHTML = `
+    <div class="font-orbitron ${colorClass} text-4xl mb-4 text-glow">${icon}</div>
+    <p class="text-white text-center font-exo">${message}</p>
+  `;
+
+  // Clear buttons
+  buttons.innerHTML = '';
+
+  if (type === 'confirm') {
+    // Yes/No buttons for confirm
+    const yesBtn = document.createElement('button');
+    yesBtn.innerHTML = '<i class="fas fa-check mr-1"></i>Yes';
+    yesBtn.className = 'btn-primary px-4 py-2 rounded font-bold text-white hover:shadow-glow transition-all';
+    yesBtn.onclick = () => {
+      modal.classList.add('hidden');
+      options.onYes?.();
+    };
+
+    const noBtn = document.createElement('button');
+    noBtn.innerHTML = '<i class="fas fa-times mr-1"></i>No';
+    noBtn.className = 'bg-gray-600 hover:bg-gray-500 px-4 py-2 rounded font-bold text-white transition-all';
+    noBtn.onclick = () => {
+      modal.classList.add('hidden');
+      options.onNo?.();
+    };
+
+    buttons.appendChild(yesBtn);
+    buttons.appendChild(noBtn);
+  } else {
+    // OK button for other types
+    const okBtn = document.createElement('button');
+    okBtn.innerHTML = '<i class="fas fa-check mr-1"></i>OK';
+    okBtn.className = 'btn-primary px-6 py-2 rounded font-bold text-white hover:shadow-glow transition-all';
+    okBtn.onclick = () => modal.classList.add('hidden');
+    buttons.appendChild(okBtn);
+  }
+
+  // Show modal with animation
+  modal.classList.remove('hidden');
+  modal.querySelector('.login-card').style.transform = 'scale(0.9)';
+  setTimeout(() => {
+    modal.querySelector('.login-card').style.transform = 'scale(1)';
+  }, 10);
+}
+
+// =========================================
 // HELPER FUNCTIONS
 // =========================================
 function generateUniqueId() {
@@ -292,10 +367,10 @@ function getdatafrom_forms() {
 }
 
 function isFormValid() {
-    if (!select_destination_) { alert('Please fill the destination field'); return false; }
-    if (!date_in.value) { alert('Please fill the departure date field'); return false; }
-    if (!currentPassengerCount) { alert('Please select the number of passengers'); return false; }
-    if (!getSelectedAccommodationName()) { alert('Please select the accommodation type'); return false; }
+    if (!select_destination_) { showAlert('Please fill the destination field', 'error'); return false; }
+    if (!date_in.value) { showAlert('Please fill the departure date field', 'error'); return false; }
+    if (!currentPassengerCount) { showAlert('Please select the number of passengers', 'error'); return false; }
+    if (!getSelectedAccommodationName()) { showAlert('Please select the accommodation type', 'error'); return false; }
 
     const forms = document.querySelectorAll('.dy_form');
     for (let form of forms) {
@@ -303,7 +378,7 @@ function isFormValid() {
         for (let input of inputs) {
             let inputType = input.type === 'tel' ? 'number' : input.type;
             if (!validateInput(input, inputType)) {
-                alert(`Please correct all fields in passenger forms (e.g., ${input.placeholder})`);
+                showAlert(`Please correct all fields in passenger forms (e.g., ${input.placeholder})`, 'error');
                 return false;
             }
         }
@@ -335,15 +410,27 @@ function total_() {
 function add_data_to_local() {
     fetch("./data.json")
         .then(res => res.json())
-        .then(data => localStorage.setItem("data", JSON.stringify(data)))
+        .then(data => {
+            localStorage.setItem("data", JSON.stringify(data));
+       
+            mydata = data;
+            destinations = mydata.destinations || [];
+            accommodations = mydata.accommodations || [];
+            get_data_();
+        })
         .catch(err => console.error("Error:", err));
 }
 
+
 function get_data_() {
     option_distination.innerHTML = "";
+   
+    option_distination.innerHTML = '<option value="" disabled selected>Select your destination</option>';
     for (let d of destinations) {
         option_distination.innerHTML += `<option value="${d.id}">${d.name} - ${d.price}-$ </option>`;
     }
+
+
 
     accommodation_container_.innerHTML = "";
     for (let data of accommodations) {
@@ -433,14 +520,14 @@ button_add_passager.addEventListener("click", function() {
         addValidationToForm(newForm);
         total_();
         if (currentPassengerCount >= maxPassengers) button_add_passager.style.display = "none";
-    } else alert("the limit 6");
+    } else showAlert("The limit is 6 passengers", 'error');
 });
 
 button_submit.addEventListener("click", function() {
     if (isFormValid()) {
         localStorage.setItem("data_form", JSON.stringify(getdatafrom_forms()));
-        window.location.reload();
-  
+        showAlert(window.editingBookingId ? 'Booking updated successfully!' : 'Booking created successfully!', 'success');
+        setTimeout(() => window.location.reload(), 1500);
     }
 });
 

@@ -116,6 +116,7 @@
           <div>
             <select id="options_dist" title="Choose your destination from the list" class="select_dis w-full h-12 px-4 py-2">
               <option value="" disabled selected>Select your destination</option>
+             
             </select>
           </div>
 
@@ -244,6 +245,14 @@
         </div>
       </div>
     </footer>
+
+    <!-- Custom Alert Modal -->
+    <div id="alertModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+      <div class="bg-space-dark border border-neon-blue/50 rounded-xl p-6 max-w-md w-full mx-4 login-card">
+        <div id="alertContent" class="text-center"></div>
+        <div id="alertButtons" class="mt-4 flex justify-end space-x-2"></div>
+      </div>
+    </div>
 
     <script src="booking.js"> </script>
   </body>
