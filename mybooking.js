@@ -123,5 +123,24 @@ container_cards.addEventListener('click', function(event) {
 
         }
     }
+    if (event.target.classList.contains('button_edit')) {
+       const card = event.target.closest('.card');
+      
+       const element_id = card.querySelector('.id_class');
+       let rawText = element_id.textContent; 
+        let bookingId = rawText.replace("ID :", "").trim();
+        
+       for (let item of mydata) {
+
+            if(item.bookingDetails[0].id==bookingId){
+              item.bookingDetails[0].opnedforom="edit"   
+             localStorage.setItem("data_form", JSON.stringify(mydata));
+              window.open("booking.html","_blank")
+                
+         
+            }
+
+        }
+    }
 });
 
